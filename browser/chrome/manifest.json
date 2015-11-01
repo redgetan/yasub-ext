@@ -17,5 +17,5 @@
     "default_title": "Yasub Subtitle Viewer",      // optional; shown in tooltip
     "default_popup": "popup.html"        // optional
   },
-  "web_accessible_resources": ["popcorn-complete.js","popcorn_naver.js","init_naver.js"]
+  "web_accessible_resources": ["screenfull.js","popcorn-complete.js","popcorn_naver.js","init_naver.js"]
 }

@@ -1,3 +1,13 @@
+#yasub_overlay {
+  cursor: pointer;
+  position: absolute;
+  height: 87%;
+  width: 100%;
+  display: block;
+  top: 0px;
+  display: none;
+}
+
 #yasub_subtitle_bar {
   position: relative;
   bottom: 100px;
@@ -6,13 +16,14 @@
   color: white;
   opacity: 0.8;
   font-size: 20px;
-  height: 30px;
-  line-height: 30px;
-  padding: 0px 5px;
+  height: auto;
+  line-height: 20px;
+  padding: 2px 5px;
   vertical-align: bottom;
-  display: inline-block;
+  display: none;
 }
 
 #yasub_subtitle_bar:empty {
   display: none;
 }
+

@@ -63,15 +63,9 @@
     };
 
     function onNaverStateChange(sCallbackType) {
-      console.log("mario: " + sCallbackType);
-
       playerReady = true;
 
       switch(sCallbackType) {
-        case "stop":
-          onEnded();
-          break;
-
         case "connect":
           impl.duration = player.getVideoTimes()[NAVER_DURATION_INDEX];
           impl.readyState = self.HAVE_METADATA;
@@ -98,6 +92,11 @@
         case "pause":
           onPause();
           break;
+
+        case "stop":
+          onEnded();
+          break;
+
 
       }
     }
@@ -245,7 +244,6 @@
     }
 
     self.play = function() {
-      if (impl.options.is_extension) return;
       if (!playerReady) return;
       
       impl.paused = false;
@@ -263,7 +261,6 @@
     }
 
     self.pause = function() {
-      if (impl.options.is_extension) return;
       if (!playerReady) return;
       impl.paused = true;
       player.pauseVideo();

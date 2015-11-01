@@ -1,6 +1,4 @@
 (function() {
-  console.log("yo...");
-
   var addScriptToDocument = function(scriptName, parentEl, callback) {
     var scriptEl = document.createElement('script');
     scriptEl.src = chrome.extension.getURL(scriptName);
@@ -8,9 +6,11 @@
     parentEl.appendChild(scriptEl);
   };
 
-  addScriptToDocument('popcorn-complete.js', document.head, function(){
-    addScriptToDocument('popcorn_naver.js', document.head, function(){
-      addScriptToDocument('init_naver.js', document.documentElement);
+  addScriptToDocument('screenfull.js', document.head, function(){
+    addScriptToDocument('popcorn-complete.js', document.head, function(){
+      addScriptToDocument('popcorn_naver.js', document.head, function(){
+        addScriptToDocument('init_naver.js', document.documentElement);
+      });
     }); 
   });
 
