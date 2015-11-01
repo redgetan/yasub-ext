@@ -1,0 +1,21 @@
+{
+  "name": "Yasub Subtitle Viewer",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["*://tvcast.naver.com/*"],
+      "css": ["extension.css"],
+      "js": ["content_script.js"]
+    }
+  ],
+  "browser_action": {
+    "default_icon": {                    // optional
+      "19": "erlang19.png",           // optional
+      "38": "erlang38.png"            // optional
+    },
+    "default_title": "Yasub Subtitle Viewer",      // optional; shown in tooltip
+    "default_popup": "popup.html"        // optional
+  },
+  "web_accessible_resources": ["popcorn-complete.js","popcorn_naver.js","init_naver.js"]
+}
