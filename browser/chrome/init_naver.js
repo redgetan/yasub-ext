@@ -43,6 +43,41 @@ function onYasubOverlayClick() {
   }
 }
 
+function onYasubExpandBtnClick() {
+  var target = document.querySelector("#player");
+  if (!screenfull.isFullscreen) {
+    screenfull.request(target);
+    document.getElementById("yasub_expand_btn").className += " fullscreen";
+    document.getElementById("yasub_overlay").className += " fullscreen";
+    document.getElementById("yasub_subtitle_bar").className += " fullscreen";
+  } else {
+    screenfull.exit();
+    document.getElementById("yasub_expand_btn").className = document.getElementById("yasub_expand_btn").className.replace(/\bfullscreen\b/,'');
+    document.getElementById("yasub_overlay").className = document.getElementById("yasub_overlay").className.replace(/\bfullscreen\b/,'');
+    document.getElementById("yasub_subtitle_bar").className = document.getElementById("yasub_subtitle_bar").className.replace(/\bfullscreen\b/,'');
+    
+  }
+}
+
+document.addEventListener(screenfull.raw.fullscreenchange, function () {
+  if (!screenfull.isFullscreen) {
+    // after fullscreen exit, recreate yasub_expand_btn and reattach events (othewise, positioning is out of whack)
+    document.getElementById("yasub_expand_btn").outerHTML = '';
+    attachDiv("#yasub_expand_btn", "#player");
+    document.getElementById("yasub_expand_btn").onclick = onYasubExpandBtnClick;
+    document.getElementById("yasub_expand_btn").onmouseover = onYasubExpandBtnMouseOver;
+    document.getElementById("yasub_expand_btn").onmouseleave = onYasubExpandBtnMouseLeave;
+  }
+});
+
+function onYasubExpandBtnMouseOver() {
+  document.getElementById("yasub_expand_btn").setAttribute("class","hovered");
+}
+
+function onYasubExpandBtnMouseLeave() {
+  document.getElementById("yasub_expand_btn").setAttribute("class","");
+}
+
 function onLoadedMetadata() {
   document.getElementById("yasub_subtitle_bar").style.display = "inline-block";  
   document.getElementById("yasub_overlay").style.display = "block";  
@@ -54,16 +89,14 @@ var popcorn = Popcorn.naver("#player embed",url, { is_extension: true });
 // create divs
 attachDiv("#yasub_subtitle_bar", "#player");
 attachDiv("#yasub_overlay", "#player");
+attachDiv("#yasub_expand_btn", "#player");
 
 // events
 document.getElementById("yasub_overlay").onclick = onYasubOverlayClick;
+document.getElementById("yasub_expand_btn").onclick = onYasubExpandBtnClick;
+document.getElementById("yasub_expand_btn").onmouseover = onYasubExpandBtnMouseOver;
+document.getElementById("yasub_expand_btn").onmouseleave = onYasubExpandBtnMouseLeave;
 popcorn.on("loadedmetadata", onLoadedMetadata);
-
-// override fullscreen (instead of targeting the flash embed, 
-// target the player div container instead so the overlayed subtitles can be shown)
-
-overrideRequestFullscreenForEmbed();
-overrideExitFullscreenForEmbed();
 
 // load subtitle
 var repo;
