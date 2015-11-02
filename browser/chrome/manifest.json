@@ -1,5 +1,5 @@
 {
-  "name": "Yasub - Translate Videos",
+  "name": "Yasub Translations",
   "version": "0.0.1",
   "manifest_version": 2,
   "content_scripts": [
@@ -14,7 +14,7 @@
       "19": "erlang19.png",           // optional
       "38": "erlang38.png"            // optional
     },
-    "default_title": "Yasub Subtitle Viewer",      // optional; shown in tooltip
+    "default_title": "Yasub Translations",      // optional; shown in tooltip
     "default_popup": "popup.html"        // optional
   },
   "web_accessible_resources": ["232.png","screenfull.js","popcorn-complete.js","popcorn_naver.js","init_naver.js"]

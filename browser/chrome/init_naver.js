@@ -71,11 +71,11 @@ document.addEventListener(screenfull.raw.fullscreenchange, function () {
 });
 
 function onYasubExpandBtnMouseOver() {
-  document.getElementById("yasub_expand_btn").setAttribute("class","hovered");
+  document.getElementById("yasub_expand_btn").className += " hovered";
 }
 
 function onYasubExpandBtnMouseLeave() {
-  document.getElementById("yasub_expand_btn").setAttribute("class","");
+  document.getElementById("yasub_expand_btn").className = document.getElementById("yasub_expand_btn").className.replace(/\bhovered\b/,'');
 }
 
 function onLoadedMetadata() {
