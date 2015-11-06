@@ -103,14 +103,26 @@ var repo;
 var repo_token = document.location.hash.replace("#","");
 var repo_url = "http://dev.yasub.com:3000/r/" + repo_token + "/serialize";
 
-ajaxGet(repo_url, function(data){
-  repo = JSON.parse(data);
-  var timings = repo.timings;
+if (document.location.hash.match("editor")) {
+  // prepare editor view
+  var iframe = document.createElement("iframe"); 
+  iframe.src = "http://dev.yasub.com:3000/r/nXPr8qHKKHE/editor";
+  iframe.setAttribute("id", "yasub_iframe");
+  iframe.setAttribute("width", "100%");
+  iframe.setAttribute("height", "100%");
 
-  for (var i = timings.length - 1; i >= 0; i--) {
-    createTrackEvent(timings[i]);
-  }
+  document.documentElement.appendChild(iframe);
+} else {
+  ajaxGet(repo_url, function(data){
+    repo = JSON.parse(data);
+    var timings = repo.timings;
 
-});
+    for (var i = timings.length - 1; i >= 0; i--) {
+      createTrackEvent(timings[i]);
+    }
+
+  });
+}
+
 
 
