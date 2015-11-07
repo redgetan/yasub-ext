@@ -6,7 +6,18 @@
     {
       "matches": ["*://tvcast.naver.com/*"],
       "css": ["extension.css"],
-      "js": ["content_script.js"]
+      "js": [
+        "screenfull.js",
+        "popcorn-complete.js",
+        "popcorn_naver.js",
+        "init_naver.js"
+      ]
+    }, 
+    {
+      "matches": ["*://tvcast.naver.com/*"],
+      "js": [
+        "inject_scripts_to_page.js"
+      ]
     }
   ],
   "browser_action": {
@@ -17,5 +28,6 @@
     "default_title": "Yasub Translations",      // optional; shown in tooltip
     "default_popup": "popup.html"        // optional
   },
-  "web_accessible_resources": ["232.png","screenfull.js","popcorn-complete.js","popcorn_naver.js","init_naver.js"]
+  "web_accessible_resources": ["232.png", "override_naver_callback.js"]
+                                
 }

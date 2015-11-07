@@ -6,12 +6,6 @@
     parentEl.appendChild(scriptEl);
   };
 
-  addScriptToDocument('screenfull.js', document.head, function(){
-    addScriptToDocument('popcorn-complete.js', document.head, function(){
-      addScriptToDocument('popcorn_naver.js', document.head, function(){
-        addScriptToDocument('init_naver.js', document.documentElement);
-      });
-    }); 
-  });
+  addScriptToDocument('override_naver_callback.js', document.documentElement);
 
 })();

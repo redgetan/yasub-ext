@@ -51,16 +51,20 @@
 
     self._util.type = "Naver";
 
-    if (impl.options.is_extension) {
-      var originalInitCallbackHandler = initCallbackHandler;
+    function listenToNaverCallback() {
+      window.addEventListener("message", function(event) {
+        // We only accept messages from ourselves
+        if (event.source != window) return;
+
+        var message_type = event.data.split(":")[0];
+        var message = event.data.split(":")[1];
+        if (message_type === "sCallbackType") {
+          onNaverStateChange(message);
+        }
+      }, false);
     }
 
-    window["initCallbackHandler"] = function(sCallbackType) {
-      if (impl.options.is_extension) {
-        originalInitCallbackHandler(sCallbackType);
-      }
-      onNaverStateChange(sCallbackType);
-    };
+    listenToNaverCallback();
 
     function onNaverStateChange(sCallbackType) {
       playerReady = true;
