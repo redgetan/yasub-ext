@@ -3,9 +3,47 @@
     <head>
       <title>Page Title</title>
       <style type="text/css" media="screen">
+        body {
+          background-color: beige;
+          border: solid 3px black;
+          padding: 15px;
+        }
+
+        #main_container {
+          width: 400px;
+          max-height: 400px;
+        }
+
+        #current_video_details {
+          display: none;
+          text-align: center;
+          border: solid 1px lightgray;
+          margin-bottom: 20px;
+          padding: 10px 0px 20px 0px;
+          width: 100%;
+        }
+
+        #current_video_thumbnail {
+          width: 90px;
+          height: 60px;
+        }
+
+        #current_video_title {
+          font-size: 12px;
+          margin-top: 10px;
+          margin-bottom: 20px;
+        }
+
         #subtitle_btn {
+          padding: 5px;
           border: solid 1px gray;
+          background-color: lightcoral;
+          color: white;
           text-decoration: none;
+        }
+
+        #subtitle_btn:focus {
+          outline-width: 0;
         }
 
         #subtitle_btn.ready {
@@ -14,10 +52,67 @@
         }
 
         #progress_indicator {
-          height: 30px;
-          width: 100px;
           border: solid 1px red;
           margin-top: 20px;
+        }
+
+        #progress_indicator:empty {
+          display: none;
+        }
+
+        .repo_item {
+          clear: both;
+          display: table-row;
+        }
+
+        .repo_item:hover {
+          cursor: pointer;
+          background-color: steelblue;
+        }
+
+        .repo_item:hover .repo_title,
+        .repo_item:hover .repo_views {
+          color: white;
+        }
+
+        .repo_item_col {
+          float: left;
+          margin-right: 10px;
+          max-height: 30px;
+        }
+
+        .repo_thumbnail img {
+          width: 30px;  
+          height: 20px;  
+        }
+
+        .repo_title {
+          width: 250px;
+          white-space: nowrap;
+          overflow: hidden;
+          color: gray;
+        }
+
+        .repo_views {
+          text-align: right;
+          width: 80px;
+          color: lightseagreen;
+        }
+
+        .repo_open a {
+          display: none;
+/*          background-color: black;
+          padding: 0px 5px;
+          text-decoration: none;
+          color: white;
+*/        }
+
+        #sign_in_container {
+          display: none;
+          text-align: center;
+          /*border: solid 1px lightgray; */
+          margin-top: 30px;
+          margin-bottom: 30px;
         }
 
       </style>
@@ -26,12 +121,18 @@
     </head>
 
     <body>
-      <p>
-        Just this for now
-      </p>
-      <div id="subtitle_btn_container">
-        <a href="#" id="subtitle_btn" target="_blank">Subtitle</a>
-      </div>
-      <div id="progress_indicator"></div>
+      <div id='main_container'>
+        <div id='current_video_details'>
+          <img id='current_video_thumbnail' src="">
+          <div id='current_video_title'></div>
+          <a href="#" id="subtitle_btn" target="_blank">Subtitle</a>
+          <div id="progress_indicator"></div>
+          </div>
+        </div>
+        <div id='user_repository_container'>
+        </div>
+        <div id="sign_in_container">
+          <span><a href="" id="sign_in_btn">Login</a> to list your subtitles</span>
+        </div>
     </body>
 </html>

@@ -7,6 +7,8 @@ var PROGRESS_QUERY_INTERVAL = 2000;
 var queryProgressTimeoutList = [];
 
 function queryProgress(query_progress_url) {
+  naverEditorPort.postMessage({ progress: 0 });
+
   $.ajax({
     url: query_progress_url,
     method: "GET",
@@ -15,18 +17,18 @@ function queryProgress(query_progress_url) {
       if (data.new_repo_url) {
         naverEditorPort.postMessage({ new_repo_url: data.new_repo_url });
       } else {
-        naverEditorPort.postMessage({ progress: data.progress });
-
         if (data.progress === "100") {
           for (var i = 0; i < queryProgressTimeoutList.length; i++) { 
              clearTimeout(queryProgressTimeoutList[i]);
           }
+          naverEditorPort.postMessage({ progress: 100 });
         } else {
           var timeout = setTimeout(function(){
             queryProgress(query_progress_url);
           }, PROGRESS_QUERY_INTERVAL);
           
           queryProgressTimeoutList.push(timeout);
+          naverEditorPort.postMessage({ progress: data.progress });
         }
       }
     }

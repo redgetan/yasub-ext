@@ -1,4 +1,7 @@
 var base_url = "http://dev.yasub.com:3000";
+var popcorn;
+var WAIT_FOR_RESPONSE_CALLBACK_TO_FINISH = true;
+  
 
 function ajaxGet(url, callback){
   var xhttp = new XMLHttpRequest();
@@ -61,17 +64,6 @@ function onYasubExpandBtnClick() {
   }
 }
 
-document.addEventListener(screenfull.raw.fullscreenchange, function () {
-  if (!screenfull.isFullscreen) {
-    // after fullscreen exit, recreate yasub_expand_btn and reattach events (othewise, positioning is out of whack)
-    document.getElementById("yasub_expand_btn").outerHTML = '';
-    attachDiv("#yasub_expand_btn", "#player");
-    document.getElementById("yasub_expand_btn").onclick = onYasubExpandBtnClick;
-    document.getElementById("yasub_expand_btn").onmouseover = onYasubExpandBtnMouseOver;
-    document.getElementById("yasub_expand_btn").onmouseleave = onYasubExpandBtnMouseLeave;
-  }
-});
-
 function onYasubExpandBtnMouseOver() {
   document.getElementById("yasub_expand_btn").className += " hovered";
 }
@@ -85,20 +77,34 @@ function onLoadedMetadata() {
   document.getElementById("yasub_overlay").style.display = "block";  
 }
 
-var url = document.location.href;
-var popcorn = Popcorn.naver("#player embed",url, { is_extension: true });
+function initNaverPlayer() {
+  var url = document.location.href;
+  popcorn = Popcorn.naver("#player embed",url, { is_extension: true });
 
-// create divs
-attachDiv("#yasub_subtitle_bar", "#player");
-attachDiv("#yasub_overlay", "#player");
-attachDiv("#yasub_expand_btn", "#player");
+  // create divs
+  attachDiv("#yasub_subtitle_bar", "#player");
+  attachDiv("#yasub_overlay", "#player");
+  attachDiv("#yasub_expand_btn", "#player");
 
-// events
-document.getElementById("yasub_overlay").onclick = onYasubOverlayClick;
-document.getElementById("yasub_expand_btn").onclick = onYasubExpandBtnClick;
-document.getElementById("yasub_expand_btn").onmouseover = onYasubExpandBtnMouseOver;
-document.getElementById("yasub_expand_btn").onmouseleave = onYasubExpandBtnMouseLeave;
-popcorn.on("loadedmetadata", onLoadedMetadata);
+  // events
+
+  document.addEventListener(screenfull.raw.fullscreenchange, function () {
+    if (!screenfull.isFullscreen) {
+      // after fullscreen exit, recreate yasub_expand_btn and reattach events (othewise, positioning is out of whack)
+      document.getElementById("yasub_expand_btn").outerHTML = '';
+      attachDiv("#yasub_expand_btn", "#player");
+      document.getElementById("yasub_expand_btn").onclick = onYasubExpandBtnClick;
+      document.getElementById("yasub_expand_btn").onmouseover = onYasubExpandBtnMouseOver;
+      document.getElementById("yasub_expand_btn").onmouseleave = onYasubExpandBtnMouseLeave;
+    }
+  });
+
+  document.getElementById("yasub_overlay").onclick = onYasubOverlayClick;
+  document.getElementById("yasub_expand_btn").onclick = onYasubExpandBtnClick;
+  document.getElementById("yasub_expand_btn").onmouseover = onYasubExpandBtnMouseOver;
+  document.getElementById("yasub_expand_btn").onmouseleave = onYasubExpandBtnMouseLeave;
+  popcorn.on("loadedmetadata", onLoadedMetadata);
+}
 
 // load subtitle
 var repo;
@@ -115,6 +121,7 @@ if (document.location.hash.match("editor")) {
 
   document.documentElement.appendChild(iframe);
 } else if (document.location.hash.match(/yasub\/(.*)/)) {
+  initNaverPlayer();
   ajaxGet(repo_url, function(data){
     repo = JSON.parse(data);
     var timings = repo.timings;
@@ -125,5 +132,17 @@ if (document.location.hash.match("editor")) {
 
   });
 }
+
+chrome.runtime.onMessage.addListener(function (msg, sender, response) {
+  if (msg.type === "naver_details") {
+    var details = {
+      title: $("meta[property='og:title']").attr("content"),
+      image_url:  $("meta[property='og:image']").attr("content")
+    };
+
+    response(details);
+    return WAIT_FOR_RESPONSE_CALLBACK_TO_FINISH;
+  }
+});
 
 
