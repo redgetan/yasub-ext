@@ -1,3 +1,5 @@
+var base_url = "http://dev.yasub.com:3000";
+
 function ajaxGet(url, callback){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -101,18 +103,18 @@ popcorn.on("loadedmetadata", onLoadedMetadata);
 // load subtitle
 var repo;
 var repo_token = document.location.hash.replace("#","");
-var repo_url = "http://dev.yasub.com:3000/r/" + repo_token + "/serialize";
+var repo_url = base_url + "/r/" + repo_token + "/serialize";
 
 if (document.location.hash.match("editor")) {
   // prepare editor view
   var iframe = document.createElement("iframe"); 
-  iframe.src = "http://dev.yasub.com:3000/r/nXPr8qHKKHE/editor";
+  iframe.src = base_url + "/r/nXPr8qHKKHE/editor";
   iframe.setAttribute("id", "yasub_iframe");
   iframe.setAttribute("width", "100%");
   iframe.setAttribute("height", "100%");
 
   document.documentElement.appendChild(iframe);
-} else {
+} else if (document.location.hash.match(/yasub\/(.*)/)) {
   ajaxGet(repo_url, function(data){
     repo = JSON.parse(data);
     var timings = repo.timings;
@@ -126,3 +128,11 @@ if (document.location.hash.match("editor")) {
 
 
 
+var naver_url = window.location.href.split("#")[0];
+var message = { 
+  type: "naver_player_id",
+  naver_player_id: $("#player embed").attr("id"), 
+  url: naver_url  
+};
+
+chrome.runtime.sendMessage(message);

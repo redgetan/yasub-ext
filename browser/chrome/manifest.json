@@ -1,12 +1,22 @@
 {
-  "name": "Yasub Translations",
+  "name": "Yasub - Let's Subtitle",
   "version": "0.0.1",
   "manifest_version": 2,
+  "permissions": [
+    "tabs",
+    "webRequest",
+    "*://*.smartmediarep.com/*"
+  ],
+  "background": {
+    "persistent": true,
+    "scripts": ["jquery.js","background.js"]
+  },
   "content_scripts": [
     {
       "matches": ["*://tvcast.naver.com/*"],
       "css": ["extension.css"],
       "js": [
+        "jquery.js",
         "screenfull.js",
         "popcorn-complete.js",
         "popcorn_naver.js",
