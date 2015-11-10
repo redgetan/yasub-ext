@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "manifest_version": 2,
   "permissions": [
+    "cookies",
+    "*://*.yasub.com/*",
     "storage",
     "tabs",
     "webRequest",
