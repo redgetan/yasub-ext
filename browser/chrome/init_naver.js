@@ -127,12 +127,3 @@ if (document.location.hash.match("editor")) {
 }
 
 
-
-var naver_url = window.location.href.split("#")[0];
-var message = { 
-  type: "naver_player_id",
-  naver_player_id: $("#player embed").attr("id"), 
-  url: naver_url  
-};
-
-chrome.runtime.sendMessage(message);

@@ -4,17 +4,20 @@ $(document).ready(function(){
 
     chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
       var url = tabs[0].url;
-      console.log("tab url is: " + url);
 
-      var port = chrome.extension.connect({ name: "naver_editor" });
-      port.postMessage({ url: url });
-      port.onMessage.addListener(function(msg) {
-        if (msg.new_repo_url) {
+      var message = { 
+        type: "naver_editor",
+        url: url  
+      };
+
+      chrome.runtime.sendMessage(chrome.runtime.id, message, {}, function(response){
+        console.log("popup cb: " + response);
+        if (response.new_repo_url) {
           $("#subtitle_btn").text("Ready");  
           $("#subtitle_btn").addClass("ready");  
-          $("#subtitle_btn").attr("href",msg.new_repo_url);  
-        } else if (msg.progress) {
-          $("#progress_indicator").val(msg.progress + " %");
+          $("#subtitle_btn").attr("href",response.new_repo_url);  
+        } else if (response.progress) {
+          $("#progress_indicator").text(response.progress + " %");
         }
       });
     });
