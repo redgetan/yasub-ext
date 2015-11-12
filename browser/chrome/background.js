@@ -7,8 +7,6 @@ var PROGRESS_QUERY_INTERVAL = 2000;
 var queryProgressTimeoutList = [];
 
 function queryProgress(query_progress_url) {
-  naverEditorPort.postMessage({ progress: 0 });
-
   $.ajax({
     url: query_progress_url,
     method: "GET",
@@ -45,6 +43,7 @@ function downloadSource(videoUrl, sourceDownloadUrl) {
       if (data.new_repo_url) {
         naverEditorPort.postMessage({ new_repo_url: data.new_repo_url });
       } else if (data.query_progress_url) {
+        naverEditorPort.postMessage({ progress: 0 });
         queryProgress(data.query_progress_url);
       }
     }
@@ -52,7 +51,6 @@ function downloadSource(videoUrl, sourceDownloadUrl) {
 } 
 
 // url -> 
-
 chrome.webRequest.onResponseStarted.addListener(function(data){
   if (data.url.match(/smartmediarep.com/)) {
       var match;
@@ -70,20 +68,17 @@ chrome.webRequest.onResponseStarted.addListener(function(data){
   }
 }, {urls: ["<all_urls>"] });
 
-chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
-    if (msg.type === "naver_editor") {
-    }
-    return true;
-});
-
-
 chrome.runtime.onConnect.addListener(function(port) {
   if (port.name === "naver_editor") {
     naverEditorPort = port;
     port.onMessage.addListener(function(msg) {
       chrome.storage.local.get(msg.url, function(item){
         var sourceDownloadUrl = item[msg.url];
-        downloadSource(msg.url, sourceDownloadUrl);
+        if (sourceDownloadUrl) {
+          downloadSource(msg.url, sourceDownloadUrl);
+        } else {
+          naverEditorPort.postMessage({ missing_download_url: true });
+        }
       });
     });
   }
