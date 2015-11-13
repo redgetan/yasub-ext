@@ -6,6 +6,6 @@
     parentEl.appendChild(scriptEl);
   };
 
-  addScriptToDocument('override_naver_callback.js', document.documentElement);
+  addScriptToDocument('javascripts/naver/override_naver_callback.js', document.documentElement);
 
 })();

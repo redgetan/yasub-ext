@@ -108,8 +108,7 @@ function initNaverPlayer() {
 
 // load subtitle
 var repo;
-var repo_token = document.location.hash.replace("#","");
-var repo_url = base_url + "/r/" + repo_token + "/serialize";
+var match;
 
 if (document.location.hash.match("editor")) {
   // prepare editor view
@@ -120,8 +119,12 @@ if (document.location.hash.match("editor")) {
   iframe.setAttribute("height", "100%");
 
   document.documentElement.appendChild(iframe);
-} else if (document.location.hash.match(/yasub\/(.*)/)) {
+} else if (match = document.location.hash.match(/yasub\/(.*)/)) {
+  var repo_token = match[1];
+  var repo_url = base_url + "/r/" + repo_token + "/serialize";
+
   initNaverPlayer();
+  
   ajaxGet(repo_url, function(data){
     repo = JSON.parse(data);
     var timings = repo.timings;
