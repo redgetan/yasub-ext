@@ -50,7 +50,7 @@ function downloadSource(videoUrl, sourceDownloadUrl) {
   });
 } 
 
-// url -> 
+// grab the mp4 link of a tvcast.naver.com video
 chrome.webRequest.onResponseStarted.addListener(function(data){
   if (data.url.match(/smartmediarep.com/)) {
       var match;
@@ -66,7 +66,7 @@ chrome.webRequest.onResponseStarted.addListener(function(data){
         });
       }
   }
-}, {urls: ["<all_urls>"] });
+}, {urls: ["*://*.smartmediarep.com/*"] });
 
 chrome.runtime.onConnect.addListener(function(port) {
   if (port.name === "naver_editor") {
