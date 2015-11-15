@@ -12,7 +12,9 @@ function queryProgress(query_progress_url) {
     method: "GET",
     dataType: "json",
     success: function(data) {
-      if (data.new_repo_url) {
+      if (data.failed) {
+        popupPort.postMessage({ failed: true });
+      else if (data.new_repo_url) {
         popupPort.postMessage({ new_repo_url: data.new_repo_url });
       } else {
         if (data.progress === "100") {
@@ -28,6 +30,23 @@ function queryProgress(query_progress_url) {
           queryProgressTimeoutList.push(timeout);
           popupPort.postMessage({ progress: data.progress });
         }
+      }
+    }
+  });
+}
+
+function getReadyState(videoUrl, callback) {
+  $.ajax({
+    url: base_url + "/videos/ready_state",
+    data: { source_url: videoUrl },
+    method: "GET",
+    dataType: "json",
+    success: function(data) {
+      if (data.ready_state === "ready") {
+        callback({ new_repo_url: data.new_repo_url });
+      } else if (data.ready_state === "download_in_progress") {
+        popupPort.postMessage({ progress: 0 });
+        queryProgress(data.query_progress_url);
       }
     }
   });
@@ -124,6 +143,13 @@ chrome.runtime.onConnect.addListener(function(port) {
         } else {
           popupPort.postMessage({ missing_download_url: true });
         }
+      });
+    });
+  } else if (port.name === "get_ready_state") {
+    popupPort = port;
+    port.onMessage.addListener(function(msg) {
+      getReadyState(msg.url, function(data){
+        popupPort.postMessage(data);
       });
     });
   }

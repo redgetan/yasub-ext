@@ -3,7 +3,7 @@ var base_url = "http://dev.yasub.com:3000";
 $(document).ready(function(){
   populateCurrentVideoDetails();
   populateUserRepositoryList();
-  bindEvents()  ;
+  bindEvents();
 });
 
 function populateCurrentVideoDetails() {
@@ -110,7 +110,29 @@ function prepareEditor() {
       } else if (msg.progress) {
         $("#progress_indicator").text("Preparing....." + msg.progress + " %");
       } else if (msg.missing_download_url) {
-        $("#progress_indicator").text("Please skip the ad first... ");
+        $("#progress_indicator").text("We can't find the link for mp4...Make sure the actual video is playing");
+      } else if (msg.failed) {
+        $("#progress_indicator").text("Download Failed");
+      }
+    });
+
+  });
+}
+
+function getReadyState() {
+  chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+    var url = tabs[0].url;
+
+    var port = chrome.runtime.connect({name: "get_ready_state"});
+    port.postMessage({url: url});
+    port.onMessage.addListener(function(msg) {
+      if (msg.new_repo_url) {
+        $("#progress_indicator").text("");
+        $("#subtitle_btn").text("Ready");  
+        $("#subtitle_btn").addClass("ready");  
+        $("#subtitle_btn").attr("href",msg.new_repo_url);  
+      } else if (msg.progress) {
+        $("#progress_indicator").text("Preparing....." + msg.progress + " %");
       }
     });
 
