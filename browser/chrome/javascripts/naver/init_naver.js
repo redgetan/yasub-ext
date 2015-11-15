@@ -137,7 +137,7 @@ if (document.location.hash.match("editor")) {
 }
 
 chrome.runtime.onMessage.addListener(function (msg, sender, response) {
-  if (msg.type === "naver_details") {
+  if (msg.type === "video_details") {
     var details = {
       title: $("meta[property='og:title']").attr("content"),
       image_url:  $("meta[property='og:image']").attr("content")

@@ -8,7 +8,8 @@
     "storage",
     "tabs",
     "webRequest",
-    "*://*.smartmediarep.com/*"
+    "*://*.smartmediarep.com/*",
+    "*://*.nicovideo.jp/*"
   ],
   "background": {
     "persistent": true,
@@ -31,6 +32,17 @@
       "js": [
         "javascripts/naver/inject_scripts_to_page.js"
       ]
+    },
+    {
+      "matches": ["*://*.nicovideo.jp/*"],
+      "css": ["stylesheets/extension.css"],
+      "js": [
+        "javascripts/lib/jquery.js",
+        "javascripts/lib/screenfull.js",
+        "javascripts/lib/popcorn-complete.js",
+        "javascripts/lib/popcorn_nicovideo.js",
+        "javascripts/nicovideo/init_nicovideo.js"
+      ]
     }
   ],
   "browser_action": {
@@ -38,7 +50,7 @@
       "19": "images/o_16.png",           // optional
       "38": "images/o_48.png"            // optional
     },
-    "default_title": "Yasub Translations",      // optional; shown in tooltip
+    "default_title": "Yasub - Let's Subtitle",      // optional; shown in tooltip
     "default_popup": "popup.html"        // optional
   },
   "web_accessible_resources": ["images/232.png", "javascripts/naver/override_naver_callback.js"]

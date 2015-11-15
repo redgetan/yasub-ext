@@ -8,8 +8,8 @@ $(document).ready(function(){
 
 function populateCurrentVideoDetails() {
   getTabUrl(function(url) {
-    if (url.match(/tvcast.naver.com/)) {
-      getCurrentNaverDetails(function(data){
+    if (url.match(/tvcast.naver.com/) || url.match(/nicovideo.jp/)) {
+      getCurrentVideoDetails(function(data){
         if (chrome.runtime.lastError) console.log("error in callback: " + JSON.stringify(chrome.runtime.lastError));
 
         console.log("showing video details: " + url);
@@ -60,9 +60,9 @@ function getTabUrl(callback) {
   });
 }
 
-function getCurrentNaverDetails(callback) {
+function getCurrentVideoDetails(callback) {
   chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-    var msg = {type: 'naver_details'};
+    var msg = {type: 'video_details'};
     chrome.tabs.sendMessage(tabs[0].id, msg, callback);
   });
 }
@@ -97,14 +97,9 @@ function prepareEditor() {
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
     var url = tabs[0].url;
 
-    var message = { 
-      type: "naver_editor",
-      url: url  
-    };
-
     $("#progress_indicator").text("Preparing.....0%");
 
-    var port = chrome.runtime.connect({name: "naver_editor"});
+    var port = chrome.runtime.connect({name: "open_editor"});
     port.postMessage({url: url});
     port.onMessage.addListener(function(msg) {
       if (msg.new_repo_url) {
