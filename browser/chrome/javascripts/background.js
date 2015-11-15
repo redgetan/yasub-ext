@@ -14,7 +14,7 @@ function queryProgress(query_progress_url) {
     success: function(data) {
       if (data.failed) {
         popupPort.postMessage({ failed: true });
-      else if (data.new_repo_url) {
+      } else if (data.new_repo_url) {
         popupPort.postMessage({ new_repo_url: data.new_repo_url });
       } else {
         if (data.progress === "100") {

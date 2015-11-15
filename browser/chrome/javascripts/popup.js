@@ -1,23 +1,25 @@
 var base_url = "http://dev.yasub.com:3000";
+var url;
 
 $(document).ready(function(){
-  populateCurrentVideoDetails();
-  populateUserRepositoryList();
-  bindEvents();
+  getTabUrl(function(tabUrl) {
+    url = tabUrl;
+    if (url.match(/tvcast.naver.com/) || url.match(/nicovideo.jp/)) {
+      populateCurrentVideoDetails();
+      getReadyState();
+    }
+    populateUserRepositoryList();
+    bindEvents();
+  });
 });
 
 function populateCurrentVideoDetails() {
-  getTabUrl(function(url) {
-    if (url.match(/tvcast.naver.com/) || url.match(/nicovideo.jp/)) {
-      getCurrentVideoDetails(function(data){
-        if (chrome.runtime.lastError) console.log("error in callback: " + JSON.stringify(chrome.runtime.lastError));
+  getCurrentVideoDetails(function(data){
+    if (chrome.runtime.lastError) console.log("error in callback: " + JSON.stringify(chrome.runtime.lastError));
 
-        console.log("showing video details: " + url);
-        $("#current_video_details").show();
-        $("#current_video_title").text(data.title);
-        $("#current_video_thumbnail").attr("src", data.image_url);
-      });
-    }
+    $("#current_video_details").show();
+    $("#current_video_title").text(data.title);
+    $("#current_video_thumbnail").attr("src", data.image_url);
   });
 }
 
@@ -71,6 +73,8 @@ function bindEvents() {
   $("#subtitle_btn").on("click", function(event){
     event.preventDefault();
 
+    if ($(this).attr("disabled") === "disabled") return;
+
     if ($(this).hasClass("ready")) {
       chrome.tabs.create({ url: $(this).attr("href") });
     } else {
@@ -94,47 +98,41 @@ function bindEvents() {
 }
 
 function prepareEditor() {
-  chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-    var url = tabs[0].url;
+  $("#progress_indicator").text("Preparing.....0%");
 
-    $("#progress_indicator").text("Preparing.....0%");
-
-    var port = chrome.runtime.connect({name: "open_editor"});
-    port.postMessage({url: url});
-    port.onMessage.addListener(function(msg) {
-      if (msg.new_repo_url) {
-        $("#progress_indicator").text("");
-        $("#subtitle_btn").text("Ready");  
-        $("#subtitle_btn").addClass("ready");  
-        $("#subtitle_btn").attr("href",msg.new_repo_url);  
-      } else if (msg.progress) {
-        $("#progress_indicator").text("Preparing....." + msg.progress + " %");
-      } else if (msg.missing_download_url) {
-        $("#progress_indicator").text("We can't find the link for mp4...Make sure the actual video is playing");
-      } else if (msg.failed) {
-        $("#progress_indicator").text("Download Failed");
-      }
-    });
-
+  var port = chrome.runtime.connect({name: "open_editor"});
+  port.postMessage({url: url});
+  port.onMessage.addListener(function(msg) {
+    if (msg.new_repo_url) {
+      $("#progress_indicator").text("");
+      $("#subtitle_btn").removeAttr("disabled");
+      $("#subtitle_btn").text("Ready");  
+      $("#subtitle_btn").addClass("ready");  
+      $("#subtitle_btn").attr("href",msg.new_repo_url);  
+    } else if (msg.progress) {
+      $("#subtitle_btn").attr("disabled", "disabled");
+      $("#progress_indicator").text("Preparing....." + msg.progress + " %");
+    } else if (msg.missing_download_url) {
+      $("#progress_indicator").text("We can't find the link for mp4...Make sure the actual video is playing");
+    } else if (msg.failed) {
+      $("#progress_indicator").text("Download Failed");
+    }
   });
 }
 
 function getReadyState() {
-  chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-    var url = tabs[0].url;
-
-    var port = chrome.runtime.connect({name: "get_ready_state"});
-    port.postMessage({url: url});
-    port.onMessage.addListener(function(msg) {
-      if (msg.new_repo_url) {
-        $("#progress_indicator").text("");
-        $("#subtitle_btn").text("Ready");  
-        $("#subtitle_btn").addClass("ready");  
-        $("#subtitle_btn").attr("href",msg.new_repo_url);  
-      } else if (msg.progress) {
-        $("#progress_indicator").text("Preparing....." + msg.progress + " %");
-      }
-    });
-
+  var port = chrome.runtime.connect({name: "get_ready_state"});
+  port.postMessage({url: url});
+  port.onMessage.addListener(function(msg) {
+    if (msg.new_repo_url) {
+      $("#progress_indicator").text("");
+      $("#subtitle_btn").removeAttr("disabled");
+      $("#subtitle_btn").text("Ready");  
+      $("#subtitle_btn").addClass("ready");  
+      $("#subtitle_btn").attr("href",msg.new_repo_url);  
+    } else if (msg.progress) {
+      $("#subtitle_btn").attr("disabled", "disabled");
+      $("#progress_indicator").text("Preparing....." + msg.progress + " %");
+    }
   });
 }
