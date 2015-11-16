@@ -1,10 +1,10 @@
-var base_url = "http://dev.yasub.com:3000";
+var base_url = "https://www.yasub.com";
 var url;
 
 $(document).ready(function(){
   getTabUrl(function(tabUrl) {
     url = tabUrl;
-    if (url.match(/tvcast.naver.com/) || url.match(/nicovideo.jp/)) {
+    if (url.match(/tvcast.naver.com/) || url.match(/nicovideo.jp\/watch\/sm/)) {
       populateCurrentVideoDetails();
       getReadyState();
     }

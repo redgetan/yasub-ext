@@ -1,4 +1,4 @@
-var base_url = "http://dev.yasub.com:3000";
+var base_url = "https://www.yasub.com";
 
 var naverPlayerToUrlMap = {};
 var sourceDownloadUrlMap = {};

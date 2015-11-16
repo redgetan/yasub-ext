@@ -1,4 +1,4 @@
-var base_url = "http://dev.yasub.com:3000";
+var base_url = "https://www.yasub.com";
 var popcorn;
 var WAIT_FOR_RESPONSE_CALLBACK_TO_FINISH = true;
   
