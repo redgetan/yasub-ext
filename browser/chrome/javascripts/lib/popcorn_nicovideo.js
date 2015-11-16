@@ -8,7 +8,7 @@
   regexNicovideo = /.*nicovideo.jp\/watch\/(.*)/,
   ABS = Math.abs;
 
-  function HTMLNicoVideoElement( id ) {
+  function HTMLNicoVideoElement( id, options ) {
 
     var self = this,
       parent = typeof id === "string" ? document.querySelector( id ) : id,
@@ -28,6 +28,7 @@
         duration: NaN,
         ended: false,
         paused: true,
+        options: options,
         error: null
       },
       playerReady = false,
@@ -47,7 +48,24 @@
 
     self._util.type = "Nico";
 
-    window["onNicoPlayerReady"] = function() {
+    function listenToNicoCallback() {
+      window.addEventListener("message", function(event) {
+        // We only accept messages from ourselves
+        if (event.source != window) return;
+
+        var message_type = event.data.split(":")[0];
+        var message = event.data.split(":")[1];
+        if (message_type === "onNicoPlayerReady") {
+          onNicoPlayerReady();
+        } else if (message_type === "onNicoPlayerStatus") {
+          onNicoPlayerStatus(message);
+        }
+      }, false);
+    }
+
+    listenToNicoCallback();
+
+    function onNicoPlayerReady() {
       // dispatch loaded metadata  
 
       playerReady = true;
@@ -74,8 +92,8 @@
       return player.ext_getTotalTime();
     }
 
-    window["onNicoPlayerStatus"] = function( object, event ) {
-      switch( event ) {
+    function onNicoPlayerStatus( eventName ) {
+      switch( eventName ) {
 
         // ended
         case "end":
@@ -133,18 +151,21 @@
       // Get ID out of nicovideo url
       aSrc = regexNicovideo.exec( aSrc )[ 1 ];
 
-       var oldDocumentWrite = document.write;
+      if (impl.options.is_extension) {
+        player = document.querySelector("#external_nicoplayer");
+      } else {
+        var oldDocumentWrite = document.write;
 
-      document.write = function(node){
-        $(parent).append(node);
-      };
+        document.write = function(node){
+          $(parent).append(node);
+        };
 
-      $.getScript("http://ext.nicovideo.jp/thumb_watch/" + aSrc, function() {
-        document.write = oldDocumentWrite;
-        player = document.external_nico_0; // the nicoplayer flash object
-        self.dispatchEvent("nicothumbloaded");
-      });
-
+        $.getScript("http://ext.nicovideo.jp/thumb_watch/" + aSrc, function() {
+          document.write = oldDocumentWrite;
+          player = document.external_nico_0; // the nicoplayer flash object
+          self.dispatchEvent("nicothumbloaded");
+        });
+      }
     }
 
     function monitorCurrentTime() {
@@ -484,8 +505,8 @@
       EMPTY_STRING;
   };
 
-  Popcorn.HTMLNicoVideoElement = function( id ) {
-    return new HTMLNicoVideoElement( id );
+  Popcorn.HTMLNicoVideoElement = function( id, options ) {
+    return new HTMLNicoVideoElement( id, options );
   };
   Popcorn.HTMLNicoVideoElement._canPlaySrc = HTMLNicoVideoElement.prototype._canPlaySrc;
 
@@ -497,7 +518,7 @@
   });
 
   Popcorn.nicovideo = function( container, url, options ) {
-    var media = Popcorn.HTMLNicoVideoElement( container ),
+    var media = Popcorn.HTMLNicoVideoElement( container, options ),
         popcorn = Popcorn( media, options );
 
     media.src = url;

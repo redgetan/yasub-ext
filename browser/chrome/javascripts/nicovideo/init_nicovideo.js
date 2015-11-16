@@ -24,25 +24,46 @@ function createTrackEvent(timing) {
     start: startTime,
     end:   endTime,
     onStart: function(start, end, text) {
-      document.getElementById("yasub_subtitle_bar").innerText = text;
+      $("#yasub_subtitle_display").text(text);
     }.bind(this, startTime, endTime, subtitle),
     onEnd: function() {
-      document.getElementById("yasub_subtitle_bar").innerText = "";
+      $("#yasub_subtitle_display").text("");
     }
   });
 }
 
-function onLoadedMetadata() {
-  document.getElementById("yasub_subtitle_bar").style.display = "inline-block";  
+function applyFontSettings($el, repo) {
+    $el.css("font-family", repo.font_family);
+    $el.css("font-size", repo.font_size);
+    $el.css("line-height", parseInt(repo.font_size) + 2 + "px");
+    $el.css("font-weight", repo.font_weight);
+    $el.css("font-style", repo.font_style);
+    $el.css("color", repo.font_color);
+    applyOutlineColor($el,repo.font_outline_color);
+}
+
+function applyOutlineColor($el, color) {
+  $el.css("text-shadow", "-1px 0 " + color + ", " +
+                         "0  1px " + color + ", " +
+                         "1px  0 " + color + ", " +
+                         "0 -1px " + color + "  ");
+}
+
+function initSubtitle(repo) {
+    var timings = repo.timings;
+
+    for (var i = timings.length - 1; i >= 0; i--) {
+      createTrackEvent(timings[i]);
+    }
 }
 
 function initPlayer() {
   var url = document.location.href;
-  popcorn = Popcorn.naver("#player embed",url, { is_extension: true });
+  popcorn = Popcorn.nicovideo("#external_nicoplayer", url, { is_extension: true });
 
-  // events
-  popcorn.on("loadedmetadata", onLoadedMetadata);
 }
+
+$("#nicoplayerContainerInner").append("<div id='yasub_subtitle_bar' class='nicovideo'><div id='yasub_subtitle_display'></div></div>");
 
 // load subtitle
 var repo;
@@ -56,12 +77,8 @@ if (match = document.location.hash.match(/yasub\/(.*)/)) {
   
   ajaxGet(repo_url, function(data){
     repo = JSON.parse(data);
-    var timings = repo.timings;
-
-    for (var i = timings.length - 1; i >= 0; i--) {
-      createTrackEvent(timings[i]);
-    }
-
+    initSubtitle(repo);
+    applyFontSettings($("#yasub_subtitle_display"), repo);
   });
 }
 

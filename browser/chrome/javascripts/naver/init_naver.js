@@ -86,6 +86,8 @@ function initNaverPlayer() {
   attachDiv("#yasub_overlay", "#player");
   attachDiv("#yasub_expand_btn", "#player");
 
+  $("#yasub_subtitle_bar").hide();
+
   // events
 
   document.addEventListener(screenfull.raw.fullscreenchange, function () {

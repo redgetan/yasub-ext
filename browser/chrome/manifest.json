@@ -17,7 +17,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://tvcast.naver.com/*"],
+      "matches": ["*://tvcast.naver.com/v/*"],
       "css": ["stylesheets/extension.css"],
       "js": [
         "javascripts/lib/jquery.js",
@@ -28,13 +28,13 @@
       ]
     },
     {
-      "matches": ["*://tvcast.naver.com/*"],
+      "matches": ["*://tvcast.naver.com/v/*"],
       "js": [
         "javascripts/naver/inject_scripts_to_page.js"
       ]
     },
     {
-      "matches": ["*://*.nicovideo.jp/*"],
+      "matches": ["*://*.nicovideo.jp/watch*"],
       "css": ["stylesheets/extension.css"],
       "js": [
         "javascripts/lib/jquery.js",
@@ -42,6 +42,12 @@
         "javascripts/lib/popcorn-complete.js",
         "javascripts/lib/popcorn_nicovideo.js",
         "javascripts/nicovideo/init_nicovideo.js"
+      ]
+    },
+    {
+      "matches": ["*://*.nicovideo.jp/watch*"],
+      "js": [
+        "javascripts/nicovideo/inject_scripts_to_page.js"
       ]
     }
   ],
@@ -53,5 +59,5 @@
     "default_title": "Yasub - Let's Subtitle",
     "default_popup": "popup.html"
   },
-  "web_accessible_resources": ["images/232.png", "javascripts/naver/override_naver_callback.js"]
+  "web_accessible_resources": ["images/232.png", "javascripts/naver/override_naver_callback.js", "javascripts/nicovideo/override_nico_callback.js"]
 }

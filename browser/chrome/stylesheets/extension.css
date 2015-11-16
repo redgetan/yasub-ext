@@ -14,13 +14,49 @@
   border: solid 1px black;
   background-color: black !important;
   color: white;
-  opacity: 0.8;
   font-size: 20px;
   height: auto;
   line-height: 20px;
   padding: 2px 5px;
   vertical-align: bottom;
+}
+
+#yasub_subtitle_bar.nicovideo {
+  position: absolute;
+  width: 98%;
+  background: none !important;
+  text-align: center;
+  border: none;
+}
+
+#yasub_subtitle_display {
+  cursor: move;
+  color: white;
+  background-color: black;
+  border: none;
+  display: inline-block;
+  opacity: 0.8;
+  max-width: 95%;
+  padding: 5px;
+}
+
+#yasub_subtitle_display:empty {
   display: none;
+}
+
+div#subtitle_bar {
+  z-index: 5;
+  color: white;
+  font-weight: bold;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  background: none;
+}
+
+#river_player #subtitle_bar {
+  height: auto;
+  padding-top: 5px;
 }
 
 #yasub_subtitle_bar:empty {
