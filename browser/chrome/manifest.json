@@ -21,6 +21,10 @@
       "css": ["stylesheets/extension.css"],
       "js": [
         "javascripts/lib/jquery.js",
+        "javascripts/lib/jquery.ui.core.js",
+        "javascripts/lib/jquery.ui.widget.js",
+        "javascripts/lib/jquery.ui.mouse.js",
+        "javascripts/lib/jquery.ui.draggable.js",
         "javascripts/lib/screenfull.js",
         "javascripts/lib/popcorn-complete.js",
         "javascripts/lib/popcorn_naver.js",
@@ -38,6 +42,10 @@
       "css": ["stylesheets/extension.css"],
       "js": [
         "javascripts/lib/jquery.js",
+        "javascripts/lib/jquery.ui.core.js",
+        "javascripts/lib/jquery.ui.widget.js",
+        "javascripts/lib/jquery.ui.mouse.js",
+        "javascripts/lib/jquery.ui.draggable.js",
         "javascripts/lib/screenfull.js",
         "javascripts/lib/popcorn-complete.js",
         "javascripts/lib/popcorn_nicovideo.js",

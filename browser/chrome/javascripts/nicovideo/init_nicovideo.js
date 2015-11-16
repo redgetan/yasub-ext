@@ -1,6 +1,7 @@
 var base_url = "https://www.yasub.com";
 var popcorn;
 var WAIT_FOR_RESPONSE_CALLBACK_TO_FINISH = true;
+var subtitleViewingScreenMarginPercentage;
   
 
 function ajaxGet(url, callback){
@@ -49,12 +50,55 @@ function applyOutlineColor($el, color) {
                          "0 -1px " + color + "  ");
 }
 
+function applyPositionSettings(repo) {
+  subtitleViewingScreenMarginPercentage = repo.subtitle_position;
+  if (subtitleViewingScreenMarginPercentage) {
+    var subtitleTop = getSubtitleTop(subtitleViewingScreenMarginPercentage);
+    $("#yasub_subtitle_bar").css("top", subtitleTop + "px");
+  }
+}
+
 function initSubtitle(repo) {
     var timings = repo.timings;
 
     for (var i = timings.length - 1; i >= 0; i--) {
       createTrackEvent(timings[i]);
     }
+}
+
+function viewingScreenHeight() {
+  var nicoControlsHeight = 65;
+  return $("#external_nicoplayer").height() - nicoControlsHeight;
+}
+
+function getSubtitleMarginFromViewingScreen() {
+  return parseFloat($("yasub_subtitle_bar").css("top")) / viewingScreenHeight();
+}
+
+function getSubtitleTop(marginPercentage) {
+  return marginPercentage * viewingScreenHeight();
+}
+
+function onPlayerConfigUpdated() {
+  if (subtitleViewingScreenMarginPercentage) {
+    var subtitleTop = getSubtitleTop(subtitleViewingScreenMarginPercentage);
+    $("#yasub_subtitle_bar").css("top", subtitleTop + "px");
+  }
+}
+
+function updatePlayerSize() {
+  if (subtitleViewingScreenMarginPercentage) {
+    var subtitleTop = getSubtitleTop(subtitleViewingScreenMarginPercentage);
+    $("#yasub_subtitle_bar").css("top", subtitleTop + "px");
+  }
+}
+
+function onVideoStarted() {
+  $("#yasub_subtitle_bar").show(); 
+}
+
+function onSubtitleDisplayDraggableStop(event) {
+  subtitleViewingScreenMarginPercentage = getSubtitleMarginFromViewingScreen();
 }
 
 function initPlayer() {
@@ -64,6 +108,31 @@ function initPlayer() {
 }
 
 $("#nicoplayerContainerInner").append("<div id='yasub_subtitle_bar' class='nicovideo'><div id='yasub_subtitle_display'></div></div>");
+
+$("#yasub_subtitle_bar").draggable({
+  cursor: "move",
+  axis: "y",
+  stop: onSubtitleDisplayDraggableStop
+});
+
+$("#yasub_subtitle_bar").hide(); // hide it initially so that it doesnt cover the play button in middle
+
+window.addEventListener("message", function(event) {
+  // We only accept messages from ourselves
+  if (event.source != window) return;
+
+  var message_type = event.data.split(":")[0];
+  var message = event.data.split(":")[1];
+  if (message_type === "onPlayerConfigUpdated") {
+    onPlayerConfigUpdated();
+  } else if (message_type === "updatePlayerSize") {
+    updatePlayerSize();
+  } else if (message_type === "onVideoStarted") {
+    onVideoStarted();
+  }
+}, false);
+
+
 
 // load subtitle
 var repo;
@@ -79,6 +148,7 @@ if (match = document.location.hash.match(/yasub\/(.*)/)) {
     repo = JSON.parse(data);
     initSubtitle(repo);
     applyFontSettings($("#yasub_subtitle_display"), repo);
+    applyPositionSettings(repo);
   });
 }
 
