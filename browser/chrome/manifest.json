@@ -26,7 +26,7 @@
         "javascripts/lib/popcorn_naver.js",
         "javascripts/naver/init_naver.js"
       ]
-    }, 
+    },
     {
       "matches": ["*://tvcast.naver.com/*"],
       "js": [
@@ -46,13 +46,12 @@
     }
   ],
   "browser_action": {
-    "default_icon": {                    // optional
-      "19": "images/o_16.png",           // optional
-      "38": "images/o_48.png"            // optional
+    "default_icon": {
+      "19": "images/o_16.png",
+      "38": "images/o_48.png"
     },
-    "default_title": "Yasub - Let's Subtitle",      // optional; shown in tooltip
-    "default_popup": "popup.html"        // optional
+    "default_title": "Yasub - Let's Subtitle",
+    "default_popup": "popup.html"
   },
   "web_accessible_resources": ["images/232.png", "javascripts/naver/override_naver_callback.js"]
-                                
 }
